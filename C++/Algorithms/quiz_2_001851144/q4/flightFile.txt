@@ -1,0 +1,7 @@
+Moscow,China
+China,Japan
+Japan,Rome
+Rome,Barcelona
+Barcelona,Boston
+Barcelona,Prague
+Prague,Boston
