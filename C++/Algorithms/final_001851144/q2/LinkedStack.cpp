@@ -3,6 +3,7 @@
 #include <cassert>        // For assert
 #include "LinkedStack.h"  // Header file
 #include "PrecondViolated.h"
+#include <iostream>
 
 template<class ItemType>
 LinkedStack<ItemType>::LinkedStack() : front(nullptr), count(0)
@@ -92,6 +93,7 @@ bool LinkedStack<ItemType>::pop()
       result = true;
 	}  // end if
    
+   --count;
 	return result;	
 }  // end pop
 

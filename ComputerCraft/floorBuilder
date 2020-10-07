@@ -1,0 +1,131 @@
+--[[
+https://pastebin.com/6qmBBLpz
+]]--
+
+slot = 2
+
+function refuel()
+    current_fuel = turtle.getFuelLevel()
+    if current_fuel == 0 then
+        turtle.select(1)
+        turtle.refuel(1)
+        turtle.select(slot)
+    end
+end
+
+function selectNext()
+    selected_slot = turtle.getSelectedSlot
+    item_count = turtle.getItemCount(selected_slot)
+    if item_count == 0 then
+        slot = slot + 1
+        turtle.select(slot)
+    end
+end
+
+print("Enter width: ")
+width = io.read()
+print("Enter length: ")
+height = io.read()
+
+total_blocks = width * height
+stacks = total_blocks / 64
+remainder = total_blocks % 64
+
+print("Total blocks needed are " .. total_blocks)
+print(stacks .. " stacks are needed with a remainder of " .. remainder)
+print("place coal in slot 1 and stacks of material in slots 2 and beyond")
+
+print("Ready to Start? ")
+io.read()
+
+turtle.select(2)
+
+refuel()
+turtle.forward()
+selectNext()
+turtle.placeDown()
+detect = turtle.detect()
+line_count = 1
+bool = true
+
+while bool do
+    detect = turtle.detect()
+    if not(detect) then
+        refuel()
+        turtle.forward()
+        detect_down = turtle.detectDown()
+
+        if detect_down then
+            if ((line_count % 2) == 1) then
+                turtle.turnLeft()
+                refuel()
+                turtle.forward()
+                turtle.turnLeft()
+                turtle.refuel()
+                turtle.forward()
+                detect_down = turtle.detectDown()
+
+                if detect_down then
+                    bool = false
+                else
+                    line_count = line_count + 1
+                    selectNext()
+                    turtle.placeDown()
+                end
+            else
+                turtle.turnRight()
+                refuel()
+                turtle.forward()
+                turtle.turnRight()
+                turtle.refuel()
+                turtle.forward()
+                detect_down = turtle.detectDown()
+
+                if detect_down then
+                    bool = false
+                else
+                    line_count = line_count + 1
+                    selectNext()
+                    turtle.placeDown()
+                end
+            end
+        else
+            selectNext()
+            turtle.placeDown()   
+        end 
+    else
+        if ((line_count % 2) == 1) then
+            refuel()
+            turtle.turnLeft()
+            refuel()
+
+            detect = turtle.detect()
+            if detect then
+                bool = false
+            else
+                line_count = line_count + 1
+                turtle.forward()
+                turtle.turnLeft()
+                selectNext()
+                turtle.placeDown()
+            end
+        else
+            refuel()
+            turtle.turnRight()
+            refuel()
+
+            detect = turtle.detect()
+            if detect then
+                bool = false
+            else
+                line_count = line_count + 1
+                turtle.forward()
+                turtle.turnRight()
+                selectNext()
+                turtle.placeDown()
+            end 
+        end
+    end
+end
+
+print("Done!")

@@ -11,8 +11,8 @@ AdjacencyMatrix<LabelType>::AdjacencyMatrix()
 template<class LabelType>
 void AdjacencyMatrix<LabelType>::printMatrix()
 {
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j)
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 10; ++j)
             cout << adj[i][j] << " ";
         cout << endl;
     }
@@ -48,7 +48,6 @@ template<class LabelType>
 bool AdjacencyMatrix<LabelType>::remove(LabelType start, LabelType end)
 {
     adj[start][end] = 0;
-    adj[end][start] = 0;
     return true;
 }
 
@@ -109,17 +108,46 @@ void AdjacencyMatrix<LabelType>::breadthFirstTraversal(LabelType start, void vis
 }
 
 template<class LabelType>
-int AdjacencyMatrix<LabelType>::shortestPath(LabelType start, LabelType end, void visit(LabelType&))
+int AdjacencyMatrix<LabelType>::minDistance(int dist[], bool final[])
 {
-    // Visit the current node
-    visit(start);
+    // Set min value
+    int min = INT_MAX, min_index;
 
-    // Mark the current node as visited
-    visited[start] = true;
+    for (int x = 0; x < size; x++)
+        if (final[x] == false && dist[x] <= min)
+            min = dist[x], min_index = x;
 
-    // For all other nodes
-    for (int i = 0; i < size; ++i) {
-        if (adj[start][i] != 0 && (!visited[i]))
-            depthFirstTraversal(i,visit);
+    return min_index;
+}
+
+template<class LabelType>
+int AdjacencyMatrix<LabelType>::shortestPath(LabelType start, LabelType end)
+{
+    // Contains shortest distances
+    int dist[size];
+    // Set to 1 when shortest distance is finalized
+    bool final[size];
+
+    // Set all distances as infinite and final values as false
+    for (int i = 0; i < size; i++) {
+        dist[i] = INT_MAX, final[i] = false;
     }
+
+    // Distance to itself is always 0
+    dist[start] = 0;
+
+    // Shortest path for each vertex
+    for (int count = 0; count < size - 1; count++) {
+        int u = minDistance(dist, final);
+        final[u] = true;
+
+        // Change distance value
+        for (int x = 0; x < size; x++)
+            if (!final[x] && adj[u][x] && dist[u] != INT_MAX 
+                && dist[u] + adj[u][x] < dist[x])
+                dist[x] = dist[u] + adj[u][x];
+
+    }
+
+    return dist[6];
 }

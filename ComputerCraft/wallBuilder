@@ -1,0 +1,72 @@
+--[[
+https://pastebin.com/6qmBBLpz
+]]--
+
+slot = 1
+
+function refuel()
+    current_fuel = turtle.getFuelLevel()
+    if current_fuel == 0 then
+        turtle.select(1)
+        turtle.refuel(1)
+    end
+end
+
+function selectNext()
+    selected_slot = turtle.getSelectedSlot
+    item_count = turtle.getItemCount(selected_slot)
+    if item_count == 0 then
+        slot = slot + 1
+        turtle.select(slot)
+        os.sleep(5)
+    end
+end
+
+print("Enter width: ")
+width = io.read()
+print("Enter height: ")
+height = io.read()
+
+total_blocks = width * height
+stacks = total_blocks / 64
+remainder = total_blocks % 64
+
+is_height_even = height % 2
+
+print("Total blocks needed are " .. total_blocks)
+print(stacks .. " stacks are needed with a remainder of " .. remainder)
+print("place coal in slot 1 and stacks of material in slots 2 and beyond")
+
+print("Ready to Start? ")
+io.read()
+
+turtle.select(2)
+
+for i = 1, height do
+    for j = 1, width-1 do
+        refuel()
+        turtle.back()
+        selectNext()
+        turtle.place()
+    end
+    if turtle.detectUp() then
+        if is_height_even == 0 then
+            turtle.turnRight()
+        else
+            turtle.turnLeft()
+        end
+        refuel()
+        turtle.back()
+        selectNext()
+        turtle.place()
+    else
+        refuel()
+        turtle.up()
+        selectNext()
+        turtle.placeDown()
+        turtle.turnLeft()
+        turtle.turnLeft()
+    end
+end
+
+print("Done!")
